@@ -32,12 +32,13 @@ def load_to_dataframe():
     dataframe=pd.read_csv('file.csv')
     return dataframe
 
-credentials_dict=get_credentials()
-db_connector=RDSDataBaseConnector(credentials_dict)
-db_connector.extract_from_database(credentials_dict)
-customer_activity=db_connector.create_dataframe()
-save_as_csv(customer_activity)
-dataframe=load_to_dataframe()
-print(dataframe.shape)
-print(dataframe.head())
+if __name__ == '__main__':
+  credentials_dict=get_credentials()
+  db_connector=RDSDataBaseConnector(credentials_dict)
+  db_connector.extract_from_database(credentials_dict)
+  customer_activity=db_connector.create_dataframe()
+  save_as_csv(customer_activity)
+  dataframe=load_to_dataframe()
+  print(dataframe.shape)
+  print(dataframe.head())
 
