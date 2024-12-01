@@ -19,6 +19,11 @@ class DataTransform:
         for col in columns_to_convert:
            df[col]=df[col].astype('category')
         return df
+    def convert_to_numeric(self,df):
+        columns_to_convert=['administrative','administrative_duration','product_related','product_related_duration','informational_duration']
+        for col in columns_to_convert:
+            df[col]=pd.to_numeric(df[col])
+        return df
     
     def impute_nulls(self,df):
        for col in df.select_dtypes(include=['number']).columns:
