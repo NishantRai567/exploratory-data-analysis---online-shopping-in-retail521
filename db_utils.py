@@ -1,6 +1,6 @@
-import yaml
-from sqlalchemy import create_engine
 import pandas as pd
+from sqlalchemy import create_engine
+import yaml
 
 def get_credentials():
     with open('credentials.yaml') as f:
@@ -39,6 +39,5 @@ if __name__ == '__main__':
   customer_activity=db_connector.create_dataframe()
   save_as_csv(customer_activity)
   dataframe=load_to_dataframe()
-  print(dataframe.shape)
   print(dataframe.head())
 
