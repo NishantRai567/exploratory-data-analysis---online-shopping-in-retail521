@@ -33,5 +33,6 @@ python db_utils.py
 - Next, navigate to the eda.ipynb notebook to run the code containing the EDA for this dataset
 - Finally, navigate to the analysis.ipynb notebook to run the code for the in depth analysis of the dataset
 
-## Liscence information
+## Licensce information
+- This project is licesned under the terms of the MIT license
 
