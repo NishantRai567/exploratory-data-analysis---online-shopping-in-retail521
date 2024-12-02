@@ -1,11 +1,10 @@
-import matplotlib.pyplot as plt
 import missingno as msno
-import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.preprocessing import PowerTransformer
 from statsmodels.graphics.gofplots import qqplot
-
+import numpy as np
+from sklearn.preprocessing import PowerTransformer
 
 class DataTransform:
     

@@ -3,15 +3,18 @@ from sqlalchemy import create_engine
 import yaml
 
 def get_credentials():
+    ''' This function loads the credentials.yaml file and returns the data dictionary contained within'''
     with open('credentials.yaml') as f:
         data=yaml.safe_load(f)
         return data
 
 class RDSDataBaseConnector:
+    ''' This class is used to connect to the remote database'''
     def __init__(self,data):
         self.data=data
     
     def extract_from_database(self,data):
+        '''This method initialises a SQLAlchemy engine from the credentials provided to the class.'''
         self.DATABASE_TYPE = 'postgresql'
         self.DBAPI = 'psycopg2'
         self.RDS_USER=data['RDS_USER']
@@ -22,13 +25,16 @@ class RDSDataBaseConnector:
         self.engine = create_engine(f"{self.DATABASE_TYPE}+{self.DBAPI}://{self.RDS_USER}:{self.RDS_PASSWORD}@{self.RDS_HOST}:{self.RDS_PORT}/{self.RDS_DATABASE}")
         
     def create_dataframe(self):
+        '''This method extracts data from the RDS database and returns it as a Pandas DataFrame'''
         df = pd.read_sql_table('customer_activity', self.engine)
         return df
 
 def save_as_csv(df):
+    '''This function saves the data to an appropriate file format to your local machine.'''
     df.to_csv('file.csv', index=False)
 
 def load_to_dataframe():
+    '''This function loads the data from your local machine into a Pandas DataFrame.'''
     dataframe=pd.read_csv('file.csv')
     return dataframe
 
