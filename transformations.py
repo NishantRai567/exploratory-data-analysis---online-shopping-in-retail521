@@ -8,21 +8,18 @@ from sklearn.preprocessing import PowerTransformer
 
 class DataTransform:
     
-    def convert_to_timedelta(self,df):
-       df['administrative_duration']=pd.to_timedelta(df['administrative_duration'], unit='s')
-       df['informational_duration']=pd.to_timedelta(df['informational_duration'], unit='s')
-       df['product_related_duration']=pd.to_timedelta(df['informational_duration'], unit='s')
+    def convert_to_timedelta(self,df,columns):
+       for col in columns:
+          df[col]=pd.to_timedelta(df[col],unit='s')
        return df
 
-    def convert_to_categorical(self,df):
-        columns_to_convert=['administrative','product_related','month','operating_systems','browser','region','traffic_type','visitor_type']
-        for col in columns_to_convert:
-           df[col]=df[col].astype('category')
+    def convert_to_categorical(self,df,columns):
+        for col in columns:
+            df[col]=df[col].astype('category')
         return df
     
-    def convert_to_numeric(self,df):
-        columns_to_convert=['administrative','administrative_duration','product_related','product_related_duration','informational_duration']
-        for col in columns_to_convert:
+    def convert_to_numeric(self,df,columns):
+        for col in columns:
             df[col]=pd.to_numeric(df[col])
         return df
     
@@ -34,13 +31,12 @@ class DataTransform:
             df[col]=df[col].fillna(mode_value)
        return df
    
-    def drop_rows(self,df):
-       df=df.dropna(subset='operating_systems')
+    def drop_rows(self,df,subset_column):
+       df=df.dropna(subset=subset_column)
        return df
     
-    def correct_skew(self,df):
-        numeric_columns=['informational','bounce_rates','exit_rates','page_values']
-        for col in numeric_columns:
+    def correct_skew(self,df,columns):
+        for col in columns:
          if col in ['bounce_rates','exit_rates']:
             df[col]=df[col].map(lambda i: np.log(i) if i > 0 else 0)
          else:
@@ -49,8 +45,7 @@ class DataTransform:
              data=data.values.reshape((len(data),1))
              df[col]=pt.fit_transform(data)
     
-    def remove_outliers(self,df):
-         columns=['administrative','administrative_duration','informational','informational_duration','product_related','product_related_duration','bounce_rates','exit_rates','page_values']
+    def remove_outliers(self,df,columns):
          df_cleaned=df.copy()
          for col in columns:
             Q1 = df[col].quantile(0.25)
@@ -103,9 +98,8 @@ class Plotter:
  def generate_plot(self,df):
         return msno.bar(df)
 
- def create_histogram(self,df):
-     numeric_columns=['informational','bounce_rates','exit_rates','page_values']
-     f = pd.melt(df, value_vars=numeric_columns)
+ def create_histogram(self,df,columns):
+     f = pd.melt(df, value_vars=columns)
      g = sns.FacetGrid(f, col="variable", col_wrap=2, sharex=False, sharey=False)
      g.map(sns.histplot, "value", kde=True)
      g.set_axis_labels("Value", "Frequency")
@@ -113,15 +107,13 @@ class Plotter:
      g.tight_layout()
      plt.show()
 
- def create_qq_plot(self,df):
-    numeric_columns=['informational','bounce_rates','exit_rates','page_values']
-    for col in numeric_columns:
+ def create_qq_plot(self,df,columns):
+    for col in columns:
       qq_plot = qqplot(df[col] , scale=1 ,line='q', fit=True)
       plt.title(f"q-q plot for {col}")
       plt.show()
 
- def visualise_outliers(self,df):
-     columns=['administrative','administrative_duration','informational','informational_duration','product_related','product_related_duration','bounce_rates','exit_rates','page_values']
+ def visualise_outliers(self,df,columns):
      fig,axs=plt.subplots(3,3,figsize=(15,15))
      for i, col in enumerate(columns):
        ax = axs[i // 3, i % 3]
